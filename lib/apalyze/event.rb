@@ -13,6 +13,7 @@ module Apalyze
       @name = name
       @time = Time.now
       @tags = {}
+      @ip_address = Thread.current[:apalyze_ip_address]
     end
 
     def publish
