@@ -8,8 +8,6 @@ module Apalyze
     attr_accessor :time
     attr_accessor :message
     attr_accessor :ip_address
-    attr_reader :tags
-
 
     def initialize(name)
       @name = name
