@@ -25,6 +25,10 @@ module Apalyze
       end
     end
 
+    def tag(name, value = nil)
+      @tags[name.to_s] = value.to_s.gsub(/[^A-Za-z0-9\_\.]/, '')
+    end
+
     def payload
       hash = {}
       hash[:sent_at] = Time.now.to_i

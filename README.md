@@ -27,6 +27,6 @@ Apalyze.track('Signup') do  |m|
   event.ip_address = request.ip
   # Additional tags can be specified to allow you to filter & search for statisics
   # in the future. These must be strings or whole numbers only.
-  event.tags[:package] = user.package.name
+  event.tag :package, user.package.permalink
 end
 ```
