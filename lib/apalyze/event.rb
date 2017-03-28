@@ -35,6 +35,7 @@ module Apalyze
       hash[:time] = @time.to_f
       hash[:message] = @message if @message
       hash[:tags] = @tags unless @tags.empty?
+      hash[:ip_address] = @ip_address
       hash
     end
 
