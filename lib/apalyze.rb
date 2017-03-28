@@ -12,10 +12,14 @@ module Apalyze
   end
 
   def self.track(name, &block)
-    event = Event.new(name)
-    block.call(event) if block_given?
-    event.publish
-    event
+    if config.ready?
+      event = Event.new(name)
+      block.call(event) if block_given?
+      event.publish
+      event
+    else
+      false
+    end
   end
 
 end
