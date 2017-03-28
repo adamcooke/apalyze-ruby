@@ -28,5 +28,9 @@ module Apalyze
       @app_key || ENV['APALYZE_APP_KEY']
     end
 
+    def ready?
+      !!app_key
+    end
+
   end
 end

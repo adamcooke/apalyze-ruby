@@ -18,7 +18,11 @@ module Apalyze
     end
 
     def publish
-      self.class.socket.send(encrypted_payload, 0, Apalyze.config.host, Apalyze.config.port)
+      if Apalyze.config.ready?
+        self.class.socket.send(encrypted_payload, 0, Apalyze.config.host, Apalyze.config.port)
+      else
+        # Not sending because we don't have a key.
+      end
     end
 
     def payload
