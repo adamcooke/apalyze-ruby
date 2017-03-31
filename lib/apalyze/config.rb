@@ -1,4 +1,5 @@
 require 'openssl'
+require 'logger'
 
 module Apalyze
   class Config
@@ -7,6 +8,9 @@ module Apalyze
     attr_accessor :port
     attr_accessor :public_key
     attr_accessor :app_key
+    attr_accessor :async
+    attr_reader :error_handler
+    attr_accessor :logger
 
     def host
       @host || ENV['APALYZE_HOST'] || "udp.apalyze.io"
@@ -26,6 +30,22 @@ module Apalyze
 
     def app_key
       @app_key || ENV['APALYZE_APP_KEY']
+    end
+
+    def error_handler(&block)
+      block_given? ? @error_handler = block : @error_handler
+    end
+
+    def logger
+      @logger ||= begin
+        l = Logger.new(STDOUT)
+        l.level = :info
+        l
+      end
+    end
+
+    def async?
+      @async != false
     end
 
     def ready?

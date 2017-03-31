@@ -30,3 +30,44 @@ Apalyze.track('Signup') do  |m|
   event.tag :package, user.package.permalink
 end
 ```
+
+### Tracking IP addresses
+
+As a shortcut, you can set `Thread.current[:apalyze_ip_address]` to the current IP of a request. Apalyze will use this variable if no `ip_address` is provided with your individual tracking events.
+
+## Configuration
+
+```ruby
+Apalyze.configure do |c|
+
+  # Sets the host that events are sent to. This is usually not needed if sending
+  # to the Apalyze Cloud. These can also be set with APALYZE_HOST and APALYZE_PORT.
+  c.host = "udp.apalyze.io"
+  c.port = 13443
+
+  # Sets the app key (also set from APALYZE_APP_KEY)
+  c.app_key = "abcdefghi123456"
+
+  # Sets the public key used for encryption. This can also be set with APALYZE_PUBLIC_KEY.
+  c.public_key_text = File.read("path/to/public.key")
+
+  # Sets whether messages should be sent asyncronously. If enabled, messages will be
+  # sent in a thread. Enabled by default.
+  c.async = false
+
+  # Sets an error handler for any exceptions that are raised when delivery occurs
+  # in an asyncronous thread
+  c.error_handler do |exception|
+    Raven.capture_exception(exception)
+  end
+
+  # Sets the logger to something other than STDOUT. Apalyze will log errors to STDOUt
+  # unless a new logger is configured.
+  c.logger = MyLogger.new
+
+  # By default, only errors are logged. To log all data change the log level to
+  # debug to receive everything.
+  c.logger.level = Logger:DEBUG
+
+end
+```

@@ -18,9 +18,9 @@ module Apalyze
 
     def publish
       if Apalyze.config.ready?
-        self.class.socket.send(encrypted_payload, 0, Apalyze.config.host, Apalyze.config.port)
+        Apalyze.config.async? ? publish_on_thread! : publish!
       else
-        # Not sending because we don't have a key.
+        # Nothing to do
       end
     end
 
@@ -50,6 +50,30 @@ module Apalyze
 
     def self.socket
       @socket ||= UDPSocket.new
+    end
+
+    private
+
+    def publish!
+      self.class.socket.send(encrypted_payload, 0, Apalyze.config.host, Apalyze.config.port)
+      Apalyze.config.logger.debug "Published #{@name} event (#{self.message}) to #{Apalyze.config.host}:#{Apalyze.config.port}"
+    end
+
+    def publish_on_thread!
+      thread = Thread.new do
+        begin
+          publish!
+        rescue => e
+          Apalyze.config.logger.error "Exception: #{e.class}: #{e.message}"
+          e.backtrace.each { |bt| Apalyze.config.logger.error bt }
+          if handler = Apalyze.config.error_handler
+            handler.call(e)
+          else
+            raise
+          end
+        end
+      end
+      thread.abort_on_exception = false
     end
 
   end
